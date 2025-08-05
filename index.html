@@ -1,26 +1,382 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>问候弹窗</title>
-    <!-- 引入Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入Font Awesome -->
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    
-    <script>
-        // 页面加载完成后显示弹窗
-        window.onload = function() {
-            alert('你好');
-        }
-    </script>
-</head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">
-        <i class="fa fa-smile-o text-5xl text-blue-500 mb-4"></i>
-        <h1 class="text-2xl font-bold text-gray-800 mb-2">欢迎访问</h1>
-        <p class="text-gray-600">这个页面在加载完成时会显示一个问候弹窗</p>
-    </div>
-</body>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>学院网站导航条</title>
+		<style type="text/css">
+			body,ul,li,h2{
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+
+			body {
+				background: url("images/bodybg.jpg");
+				font-family: "微软雅黑";
+				font-size: 14px;
+				color:#000;
+			}
+
+			a {
+				text-decoration: none;
+			}
+
+			nav {
+				width: 100%;
+				height: 42px;
+				background: rgb(28, 75, 169);
+			}
+			nav .navCon {
+				width: 1200px;
+				height: 42px;
+				margin: 0 auto;
+				position: relative;/* 相对定位 */				
+				z-index: 111;/* 菜单显示在最上面,不被其它内容遮盖 */				
+			}
+			.navCon li {/* 主菜单项的样式 */				
+				width: 120px;
+				height: 42px;
+				float: left;
+				text-align: center;
+			}
+			.navCon li a {
+				display: block;/* 转换为块元素 */				
+				width: 120px;
+				height: 42px;
+				line-height: 42px;
+				color: #FFF;
+			}
+			.navCon li ul {
+				width: 150px;
+				display: none;/* 子菜单项不可见*/				
+			}
+			.navCon li:hover ul {
+				display: block;/* 鼠标悬停到主菜单项时，子菜单项可见	 */				
+			}
+			.navCon li ul li {/* 子菜单项的样式 */				
+				background: rgb(28, 75, 169);
+				width: 150px;
+				height: 40px;
+				line-height: 40px;
+				border-top: 1px rgb(0, 52, 162) solid;
+				text-align: center;
+			}
+			.navCon li ul li a {/* 子菜单项超链接的样式 */				
+				display: block;/* 转换为块元素 */				
+				width: 150px;
+				height: 40px;
+				text-align: center;
+				color: rgb(255, 255, 255);
+				line-height: 40px;
+			}
+			#row{
+				width:1200px;
+				height:120px;
+				margin:20px auto;
+			}
+			.rowL,.rowM{
+				width:374px;
+				height:120px;
+				border:1px solid #ccc;
+				border-left:3px solid #1c4ba9;
+				float:left;
+				padding-left:10px;
+				background-color:#fff;
+			}
+			.rowM{
+				margin-left:18px;
+			}
+			.row h2{
+				width:374px;
+				height:40px;
+				line-height:40px;
+				color:#1c4ba9;
+				font-size:24px;
+				font-weight:normal;
+			}
+			.cont a{
+				line-height:26px;
+				color:#666;
+			}
+			.cont a:hover{
+				color:#1c4ba9;
+			}
+			.h2 {
+				height: 40px;
+				line-height: 40px;
+				text-align: center;
+				margin-bottom: 10px;
+				background-color: #ccc; /*设置背景颜色*/				
+				background-image: url(images/xiaohui.png);/*设置背景图像*/				
+				background-repeat: no-repeat; /*设置背景图像不重复*/				
+				background-position: left center; /*设置背景图像的位置*/				
+				background-size: 40px; /*设置背景图像的大小，图像等比例缩放*/				
+			}
+			p {
+				text-indent: 2em;
+				line-height: 25px;
+			}
+			.box {
+				width: 1200px;
+				height: 620px;
+				margin: 20px auto 0;
+				background-size: 1200px 440px;
+				background-image: url(images/binhai.jpg) ; /*设置背景图像*/	
+				
+				
+				background-repeat: no-repeat; /*设置背景图像不重复*/				
+				background-position: center bottom; /*设置背景图像的位置*/				
+			}
+			table{
+				float: left;
+				color: blue;
+			}
+			.box1{
+				width: 1200px;
+				height: 175px;
+				margin: 20px auto;
+				border: 2px solid springgreen;
+				border-radius: 15px;
+				
+				margin: 0 auto;
+				
+			}
+			.box2{
+				width: 1200px;
+				height: 664px;
+				margin: 20px auto;
+				border: 2px solid springgreen;
+				border-radius: 15px;
+				margin: 0 auto 0;
+				
+			}
+			.ys{
+				font-size: 18px;
+				color: hotpink;
+				
+				
+			}
+			.photos {
+				width: 880px;
+				height: 520px;
+				margin: 50px auto;				
+			}
+			.photos li {
+				float: left;
+				width: 240px;
+				height: 240px;
+				margin-left: 40px;
+				margin-bottom: 40px;
+			}
+			.photos li a {
+				display: inline-block; /* 变为行内块元素 */				
+				width: 240px;
+				height: 240px;				
+				text-align: center;
+				text-decoration: none;
+				color: #333;
+			}
+			.photos a:after {
+				content: attr(title);/* 把婴儿的名字显示到超链接的后面*/				
+			}
+			.photos li:nth-child(even) a {/*第偶数个元素的样式 */		
+				transform: rotate(10deg);/*顺时针旋转10度 */				
+			}
+			.photos img {
+				width: 240px;
+				height: 240px;
+				transition: all 0.5s ease;/* 过渡效果 */
+			}
+			.photos li:hover .img1 {
+				border-radius: 50%; /* 第1张照片变为圆形 */
+			}
+			.photos li:hover .img2 {
+				border: 3px solid #ff0;
+				transform: rotate(-60deg); /* 第2张照片逆时针旋转60度 */
+			}
+			.photos li:hover .img3 {
+				transform: rotate(360deg);/* 第3张照片顺时针旋转360度 */
+			}
+			.photos li:hover .img4 {
+				box-shadow: 10px 10px 10px #333; /* 第4张照片添加阴影 */
+				transform: rotate(-10deg);/* 第4张照片逆时针旋转10度 */
+			}
+			
+			.photos li:hover .img5 {
+				transform: rotateY(180deg);/* 第5张照片沿Y轴旋转180度 */
+			}
+			
+			.photos li:hover .img6 {
+				transform: scale(1.2);/* 第6张照片放大1.2倍 */
+			}
+			.xh{
+				text-align: center;
+				font-size: 25px;
+				color: blueviolet;
+			}
+			.box3{
+				width: 225px;
+				height: 20px;
+				color: green;
+				margin: 0 auto;
+				text-align: center;
+				background-color: #Ff0;
+			}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<ul class="navCon">
+				<li><a href="#">网站首页</a></li>
+				<li><a href="#">学院概况</a>
+					<ul>
+						<li><a href="#">学院简介</a></li>
+						<li><a href="#">学院荣誉</a></li>
+						<li><a href="#">国家级示范性软件学院</a></li>
+						<li> <a href="#">高技能人才培训基地</a> </li>
+						<li><a href="#">办公电话</a></li>
+						<li><a href="#">联系方式</a></li>
+						<li><a href="#">视频宣传</a></li>
+					</ul>
+				</li>
+				<li><a href="#">新闻中心</a>
+					<ul>
+						<li><a href="#">学校要闻</a></li>
+						<li><a href="#">系部动态</a></li>
+						<li><a href="#">通知公告</a></li>
+					</ul>
+				</li>
+				<li><a href="#">机构设置</a></li>
+				<li><a href="#">教学科研</a>
+					<ul>
+						<li><a href="#">教务管理系统</a></li>
+						<li><a href="#">精品课程</a></li>
+						<li><a href="#">教学辅助平台</a></li>
+						<li><a href="#">网络教学平台</a></li>
+					</ul>
+				</li>
+				<li><a href="#">团学在线</a></li>
+				<li><a href="#">招生就业</a>
+					<ul>
+						<li><a href="#">招生信息网</a></li>
+						<li><a href="#">就业信息网</a></li>
+						<li><a href="#">空中乘务</a></li>
+					</ul>
+				</li>
+				<li><a href="#">公共服务</a>
+					<ul>
+						<li><a href="#">图书馆</a></li>
+						<li><a href="#">信息公开</a></li>
+						<li><a href="#">建行缴费</a>
+						</li>
+					</ul>
+				</li>
+				<li><a href="#">信息公开</a></li>
+				<li><a href="#">统一信息门户</a></li>
+			</ul>
+		</nav>
+		
+		<div id="row">
+			<div class="rowL">
+				<h2>教学系部</h2>
+				<div class="cont">
+					<a href="#" target="_blank">电子与通信系</a>
+					<a href="#" target="_blank">软件与大数据系</a>
+					<a href="#" target="_blank">数字媒体系</a>
+					<a href="#" target="_blank">智能制造系</a>
+					<a href="#" target="_blank">现代服务系</a>
+					<a href="#" target="_blank">经济与管理系</a>
+					<a href="#" target="_blank">基础教学部</a>
+					<a href="#" target="_blank">士官学院</a>
+				</div>
+			</div>
+			<div class="rowM">
+				<h2>专题站点</h2>
+				<div class="cont">
+					<a href="#" target="_blank">信院文明网</a>
+					<a href="#" target="_blank">语言文字工作专题</a>
+					<a href="#" target="_blank">教学辅助平台</a>
+					<a href="#" target="_blank">人才培养数据采集</a>
+					<a href="#" target="_blank">省级品牌专业群</a>
+				</div>
+			</div>
+			<div class="rowM">
+				<h2>热点导航</h2>
+				<div class="cont">
+					<a href="#" target="_blank">党史学习</a>
+					<a href="#" target="_blank">精品课程</a>
+					<a href="#" target="_blank">教务管理系统</a>
+					<a href="#" target="_blank">特色专业</a>
+					<a href="#" target="_blank">教学团队</a>
+					<a href="#" target="_blank">空中乘务</a>
+				</div>
+			</div>
+		</div>
+		
+		<div class="box">
+			<h2 class="h2">未来信息学院简介</h2>
+			
+			<table border="1">
+			  <tr>
+			    <th>时间</th>
+			    <th>节次</th>
+			    <th>星期一</th>
+			    <th>星期二</th>
+			    <th>星期三</th>
+			    <th>星期四</th>
+			    <th>星期五</th>
+			  </tr>
+			  <tr>
+			    <td rowspan="2">上午</td>
+			    <td>1-2节</td>
+			    <td>网页设计</td>
+			    <td>数据库应用</td>
+			    <td>Linux操作系统</td>
+			    <td>Java程序设计</td>
+			    <td>计算机网络</td>
+			  </tr>
+			  <tr>
+			    <td>3-4节</td>
+			    <td>数据库应用</td>
+			    <td>计算机网络</td>
+			    <td>Java程序设计</td>
+			    <td>网页设计</td>
+			    <td>专业英语</td>
+			  </tr>
+			  <tr>
+			    <td rowspan="2">下午</td>
+			    <td>5-6节</td>
+			    <td>自习</td>
+			    <td>Linux操作系统</td>
+			    <td>自习</td>
+			    <td>专业英语</td>
+			    <td>计算机网络</td>
+			  </tr>
+			  <tr>
+			    <td>7-8节</td>
+			    <td>课外活动</td>
+			    <td>课外活动</td>
+			    <td>课外活动</td>
+			    <td>课外活动</td>
+			    <td>课外活动</td>
+			  </tr>
+			</table>
+			<p>学院是省人民政府批准设立、教育部备案的省属公办全日制普通高校。学院秉持“以服务发展为宗旨、以促进就业为导向”的办学方针，遵循“以人为本、德技双馨、产教融合、服务社会”的办学理念，以“建设有特色高水平的高职院校”为目标，建立了开放创新强校模式，累积了优质的教育资源，形成了良好的育人环境。学院的管理水平、教学质量、办学特色得到社会各界的广泛肯定。</p>
+		</div>
+		<div class="box1">
+			<p class="ys">春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春春</p>
+		</div>
+		<div class="box2">
+			<h3 class="xh">名校校徽鉴定</h3>
+		<ul class="photos">
+			<li> <a href="baby1.png" title="笑笑"> <img src="images/baby1.png" alt="笑笑" class="img1"></a> </li>
+			<li> <a href="baby1.png" title="佳佳"> <img src="images/baby2.png" alt="佳佳" class="img2"></a> </li>
+			<li> <a href="baby1.png" title="圆圆"> <img src="images/baby3.png" alt="圆圆" class="img3"></a> </li>
+			<li> <a href="baby1.png" title="倩倩"> <img src="images/baby4.png" alt="倩倩" class="img4"></a> </li>
+			<li> <a href="baby1.png" title="乐乐"> <img src="images/baby5.png" alt="乐乐" class="img5"></a> </li>
+			<li> <a href="baby1.png" title="月月"> <img src="images/baby6.png" alt="月月" class="img6"></a> </li>
+		</ul>
+		</div>
+		<div class="box3">&nbsp;&nbsp;期&nbsp;&nbsp;末&nbsp;&nbsp;考试作品&copy;姓名&nbsp;2025-06</div>
+	</body>
 </html>
