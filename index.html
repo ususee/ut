@@ -1,10 +1,654 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title></title>
-	</head>
-	<body>
-		<a href="usr.html">啊</a>
-	</body>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hct测试</title>
+    <link rel="icon" href="imger/ico.jpg" type="image/jpeg">
+    <!-- 引入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind自定义颜色 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563EB',
+                        cubeRed: '#FF416C',
+                        cubeBlue: '#4FACFE',
+                        cubeGreen: '#00F5D4',
+                        cubeYellow: '#FFDE59',
+                        cubeOrange: '#FF9A8B',
+                        cubeWhite: '#F7FFF7',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* 基础响应式设置 */
+        :root {
+            --cube-size: 120px;
+            --loading-text-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+            :root {
+                --cube-size: 100px;
+                --loading-text-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            :root {
+                --cube-size: 80px;
+                --loading-text-size: 0.9rem;
+            }
+        }
+        
+        /* 加载动画容器 - 2秒淡出效果 */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 2s ease-out;
+            overflow: hidden;
+        }
+        
+        /* 背景渐变动画 */
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* 4D效果背景粒子 - 响应式数量 */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            pointer-events: none;
+            animation: float 10s infinite ease-in-out;
+        }
+        
+        .loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* 魔方容器 - 响应式大小和透视 */
+        .cube-container {
+            width: var(--cube-size);
+            height: var(--cube-size);
+            margin-bottom: clamp(1rem, 5vh, 2rem);
+            perspective: clamp(600px, 20vw, 800px);
+            perspective-origin: 50% 50%;
+            transform: scale(1);
+            animation: containerPulse 8s infinite ease-in-out;
+        }
+        
+        /* 魔方样式 - 4D动态效果 */
+        .cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: hyperSpin 12s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+            will-change: transform;
+            transform: translateZ(0);
+            touch-action: manipulation; /* 优化触摸设备上的交互 */
+        }
+        
+        /* 魔方面通用样式 - 响应式大小 */
+        .cube-face {
+            position: absolute;
+            width: var(--cube-size);
+            height: var(--cube-size);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 2px;
+            background-color: #222;
+            backface-visibility: hidden;
+            border-radius: 3px;
+            transform: translateZ(0);
+            box-shadow: 0 0 30px rgba(0,0,0,0.4);
+            transition: all 0.5s ease;
+        }
+        
+        /* 魔方面的渐变和光效 */
+        .cube-front {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+        }
+        
+        .cube-back {
+            background: linear-gradient(135deg, #2c3e50 0%, #2ecc71 100%);
+        }
+        
+        .cube-right {
+            background: linear-gradient(135deg, #2c3e50 0%, #e74c3c 100%);
+        }
+        
+        .cube-left {
+            background: linear-gradient(135deg, #2c3e50 0%, #e67e22 100%);
+        }
+        
+        .cube-top {
+            background: linear-gradient(135deg, #2c3e50 0%, #f1c40f 100%);
+        }
+        
+        .cube-bottom {
+            background: linear-gradient(135deg, #2c3e50 0%, #ecf0f1 100%);
+        }
+        
+        /* 4D效果：面随时间变化的亮度和色调 */
+        .cube-face::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at var(--light-x, 30%) var(--light-y, 30%), rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0.7;
+            animation: lightPulse 4s infinite alternate, lightMove 8s infinite ease-in-out;
+        }
+        
+        /* 魔方小方块 - 炫酷颜色变化效果 */
+        .cube-cell {
+            border-radius: 1px;
+            transition: transform 0.3s ease, filter 0.5s ease, background-color 1s ease;
+            animation: cellPulse 6s infinite ease-in-out, colorShift 10s infinite alternate;
+        }
+        
+        /* 不同面的小方块基础颜色 */
+        .cube-front .cube-cell {
+            background-color: rgba(79, 172, 254, 0.8);
+        }
+        
+        .cube-back .cube-cell {
+            background-color: rgba(0, 245, 212, 0.8);
+        }
+        
+        .cube-right .cube-cell {
+            background-color: rgba(255, 65, 108, 0.8);
+        }
+        
+        .cube-left .cube-cell {
+            background-color: rgba(255, 154, 139, 0.8);
+        }
+        
+        .cube-top .cube-cell {
+            background-color: rgba(255, 222, 89, 0.8);
+        }
+        
+        .cube-bottom .cube-cell {
+            background-color: rgba(247, 255, 247, 0.8);
+        }
+        
+        /* 中心方块特殊颜色 */
+        .cube-face .cube-cell:nth-child(5) {
+            filter: brightness(1.4);
+            animation: centerPulse 3s infinite alternate, colorShift 8s infinite alternate-reverse;
+        }
+        
+        .cube:hover .cube-cell,
+        .cube.touched .cube-cell {
+            transform: scale(0.9) translateZ(5px);
+            filter: brightness(1.5) saturate(1.2);
+        }
+        
+        /* 各个面的位置 - 4D空间感知（响应式Z轴距离） */
+        .cube-front {
+            transform: translateZ(calc(var(--cube-size) / 2));
+        }
+        
+        .cube-back {
+            transform: rotateY(180deg) translateZ(calc(var(--cube-size) / 2));
+        }
+        
+        .cube-right {
+            transform: rotateY(90deg) translateZ(calc(var(--cube-size) / 2));
+        }
+        
+        .cube-left {
+            transform: rotateY(-90deg) translateZ(calc(var(--cube-size) / 2));
+        }
+        
+        .cube-top {
+            transform: rotateX(90deg) translateZ(calc(var(--cube-size) / 2));
+        }
+        
+        .cube-bottom {
+            transform: rotateX(-90deg) translateZ(calc(var(--cube-size) / 2));
+        }
+        
+        /* 4D旋转动画 */
+        @keyframes hyperSpin {
+            0% {
+                transform: rotateX(30deg) rotateY(30deg) rotateZ(0deg) scale(1);
+            }
+            25% {
+                transform: rotateX(60deg) rotateY(150deg) rotateZ(45deg) scale(1.1);
+            }
+            50% {
+                transform: rotateX(30deg) rotateY(270deg) rotateZ(90deg) scale(1);
+            }
+            75% {
+                transform: rotateX(0deg) rotateY(390deg) rotateZ(135deg) scale(0.9);
+            }
+            100% {
+                transform: rotateX(30deg) rotateY(510deg) rotateZ(180deg) scale(1);
+            }
+        }
+        
+        /* 容器缩放动画 */
+        @keyframes containerPulse {
+            0%, 100% {
+                transform: scale(1) translateZ(0);
+            }
+            50% {
+                transform: scale(1.05) translateZ(0);
+            }
+        }
+        
+        /* 光线变化动画 */
+        @keyframes lightPulse {
+            0% {
+                opacity: 0.4;
+            }
+            100% {
+                opacity: 0.9;
+            }
+        }
+        
+        /* 光线移动动画 */
+        @keyframes lightMove {
+            0% {
+                --light-x: 30%;
+                --light-y: 30%;
+            }
+            25% {
+                --light-x: 70%;
+                --light-y: 30%;
+            }
+            50% {
+                --light-x: 70%;
+                --light-y: 70%;
+            }
+            75% {
+                --light-x: 30%;
+                --light-y: 70%;
+            }
+            100% {
+                --light-x: 30%;
+                --light-y: 30%;
+            }
+        }
+        
+        /* 小方块脉动动画 */
+        @keyframes cellPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        /* 中心方块特殊脉动 */
+        @keyframes centerPulse {
+            0% {
+                transform: scale(1) translateZ(0);
+                box-shadow: 0 0 5px rgba(255,255,255,0.5);
+            }
+            100% {
+                transform: scale(1.1) translateZ(3px);
+                box-shadow: 0 0 15px rgba(255,255,255,0.8);
+            }
+        }
+        
+        /* 颜色渐变动画 */
+        @keyframes colorShift {
+            0% {
+                filter: hue-rotate(0deg) saturate(1);
+            }
+            100% {
+                filter: hue-rotate(30deg) saturate(1.2);
+            }
+        }
+        
+        /* 背景粒子浮动动画 */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            50% {
+                transform: translateY(-50px) translateX(30px);
+            }
+        }
+        
+        /* 加载文字动画 - 响应式字体大小 */
+        .loading-text {
+            font-size: var(--loading-text-size);
+            font-weight: 600;
+            color: white;
+            margin-top: 1rem;
+            animation: pulse 1.5s ease-in-out infinite;
+            text-shadow: 0 0 15px rgba(255,255,255,0.5);
+            background: linear-gradient(90deg, #ff0000, #ffff00, #ff00f3, #0033ff, #ff00c4, #ff0000);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textGradient 15s ease infinite, pulse 1.5s ease-in-out infinite;
+            padding: 0 1rem; /* 防止小屏幕文字溢出 */
+            text-align: center;
+        }
+        
+        @keyframes textGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.05);
+            }
+        }
+        
+        /* 页面内容 - 响应式布局 */
+        .content {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        
+        .content h1 {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            margin-bottom: 1rem;
+        }
+        
+        .content p {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载动画屏幕 -->
+    <div class="loading-screen" id="loadingScreen">
+        <!-- 4D效果背景粒子 -->
+        <div class="particles-container" id="particlesContainer"></div>
+        
+        <div class="cube-container">
+            <div class="cube" id="interactiveCube">
+                <!-- 前面 (蓝色系) -->
+                <div class="cube-face cube-front">
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                </div>
+                
+                <!-- 后面 (绿色系) -->
+                <div class="cube-face cube-back">
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                </div>
+                
+                <!-- 右面 (红色系) -->
+                <div class="cube-face cube-right">
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                </div>
+                
+                <!-- 左面 (橙色系) -->
+                <div class="cube-face cube-left">
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                </div>
+                
+                <!-- 顶面 (黄色系) -->
+                <div class="cube-face cube-top">
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                </div>
+                
+                <!-- 底面 (白色系) -->
+                <div class="cube-face cube-bottom">
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                    <div class="cube-cell"></div>
+                </div>
+            </div>
+        </div>
+        <div class="loading-text">正在加载中...</div>
+    </div>
+
+    <!-- 示例内容 -->
+    <div class="content" id="mainContent">
+        <h1>这里是Hct测试平台</h1>
+		<a href="usr.html">点击这里跳转到五子棋</a>
+        
+    </div>
+
+    <script>
+        // 检测设备类型和性能
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        const isLowPerformance = window.innerWidth < 360 || !window.matchMedia('(min-resolution: 1dppx)').matches;
+        
+        // 根据设备性能调整粒子数量
+        const particleCount = isLowPerformance ? 10 : isMobile ? 20 : 30;
+        
+        // 创建4D效果背景粒子
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            
+            // 清空容器（防止重复创建）
+            container.innerHTML = '';
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // 响应式粒子大小
+                const baseSize = isLowPerformance ? 3 : isMobile ? 5 : 8;
+                const size = Math.random() * (isMobile ? 10 : 15) + baseSize;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 10}s`;
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                
+                // 粒子颜色随时间变化
+                particle.style.animation = `float 10s infinite ease-in-out ${Math.random() * 10}s, 
+                                           particleColor 8s infinite alternate ${Math.random() * 4}s`;
+                
+                container.appendChild(particle);
+            }
+        }
+        
+        // 添加粒子颜色变化动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes particleColor {
+                0% {
+                    background: rgba(255, 65, 108, 0.2);
+                    box-shadow: 0 0 10px rgba(255, 65, 108, 0.3);
+                }
+                25% {
+                    background: rgba(79, 172, 254, 0.2);
+                    box-shadow: 0 0 10px rgba(79, 172, 254, 0.3);
+                }
+                50% {
+                    background: rgba(0, 245, 212, 0.2);
+                    box-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
+                }
+                75% {
+                    background: rgba(255, 222, 89, 0.2);
+                    box-shadow: 0 0 10px rgba(255, 222, 89, 0.3);
+                }
+                100% {
+                    background: rgba(255, 154, 139, 0.2);
+                    box-shadow: 0 0 10px rgba(255, 154, 139, 0.3);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // 添加魔方交互事件（支持触摸和鼠标）
+        function setupCubeInteractions() {
+            const cube = document.getElementById('interactiveCube');
+            
+            // 鼠标交互
+            cube.addEventListener('mouseenter', () => {
+                enhanceCubeVisuals(cube);
+            });
+            
+            cube.addEventListener('mouseleave', () => {
+                resetCubeVisuals(cube);
+            });
+            
+            // 触摸交互（移动设备）
+            cube.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // 防止触摸事件的默认行为（如缩放）
+                cube.classList.add('touched');
+                enhanceCubeVisuals(cube);
+            });
+            
+            cube.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                cube.classList.remove('touched');
+                resetCubeVisuals(cube);
+            });
+            
+            // 触摸取消（如手指移出元素）
+            cube.addEventListener('touchcancel', () => {
+                cube.classList.remove('touched');
+                resetCubeVisuals(cube);
+            });
+        }
+        
+        // 增强魔方视觉效果
+        function enhanceCubeVisuals(cube) {
+            const cells = cube.querySelectorAll('.cube-cell');
+            cells.forEach(cell => {
+                cell.style.filter = 'hue-rotate(30deg) saturate(1.5) brightness(1.3)';
+            });
+        }
+        
+        // 重置魔方视觉效果
+        function resetCubeVisuals(cube) {
+            const cells = cube.querySelectorAll('.cube-cell');
+            cells.forEach(cell => {
+                cell.style.filter = '';
+            });
+        }
+        
+        // 页面加载完成后启动加载动画淡出
+        document.addEventListener('DOMContentLoaded', function() {
+            // 低性能设备优化：降低动画复杂度
+            if (isLowPerformance) {
+                const cube = document.getElementById('interactiveCube');
+                cube.style.animationDuration = '20s'; // 减慢动画速度
+            }
+            
+            createParticles();
+            setupCubeInteractions();
+            
+            // 响应式加载时间：根据设备性能调整
+            const loadTime = isLowPerformance ? 1500 : 2000;
+            
+            setTimeout(function() {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    document.getElementById('mainContent').style.display = 'block';
+                }, 2000);
+            }, loadTime);
+        });
+        
+        // 窗口大小改变时重新调整粒子
+        window.addEventListener('resize', createParticles);
+    </script>
+</body>
 </html>
